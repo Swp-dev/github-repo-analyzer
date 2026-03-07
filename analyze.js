@@ -15,39 +15,14 @@ function renderLanguageChart(languages) {
 
     for (const lang in languages) {
 
-        const percentValue = (languages[lang] / total) * 100;
-        const percent = percentValue.toFixed(1);
+        const percent = ((languages[lang] / total) * 100).toFixed(1);
 
-        const bars = Math.max(1, Math.round(percentValue / 5));
+        const bars = Math.round(percent / 5);
 
         const bar = "█".repeat(bars);
 
-        result += `${chalk.cyan(lang.padEnd(12))} ${bar} ${percent}%\n`;
+        result += `${chalk.cyan(lang.padEnd(10))} ${bar} ${percent}%\n`;
     }
-
-    return result;
-}
-
-function renderCommitGraph(data) {
-
-    if (!Array.isArray(data) || data.length === 0) return "";
-
-    const lastWeeks = data.slice(-10);
-
-    const max = Math.max(...lastWeeks.map(w => w.total));
-
-    const maxBar = 30;
-
-    let result = "\nCommit Activity:\n";
-
-    lastWeeks.forEach((week, i) => {
-
-        const bars = max === 0 ? 1 : Math.max(1, Math.round((week.total / max) * maxBar));
-
-        const bar = "█".repeat(bars);
-
-        result += `Week ${String(i + 1).padEnd(2)} ${bar} ${week.total}\n`;
-    });
 
     return result;
 }
@@ -70,7 +45,6 @@ async function analyzeRepo(repo) {
         let contributors = 0;
         let releases = 0;
         let languages = {};
-        let commitActivity = [];
 
         try {
             const c = await axios.get(`https://api.github.com/repos/${repo}/contributors`);
@@ -86,25 +60,6 @@ async function analyzeRepo(repo) {
             const l = await axios.get(`https://api.github.com/repos/${repo}/languages`);
             languages = l.data;
         } catch {}
-
-        for (let i = 0; i < 6; i++) {
-
-            try {
-
-                const a = await axios.get(
-                    `https://api.github.com/repos/${repo}/stats/commit_activity`,
-                    { validateStatus: () => true }
-                );
-
-                if (a.status === 200 && Array.isArray(a.data)) {
-                    commitActivity = a.data;
-                    break;
-                }
-
-            } catch {}
-
-            await new Promise(resolve => setTimeout(resolve, 2000));
-        }
 
         spinner.stop();
 
@@ -156,21 +111,6 @@ async function analyzeRepo(repo) {
                     borderColor: "green"
                 })
             );
-        }
-
-        if (Array.isArray(commitActivity) && commitActivity.length) {
-
-            const graph = renderCommitGraph(commitActivity);
-
-            if (graph) {
-                console.log(
-                    boxen(graph, {
-                        padding: 1,
-                        borderStyle: "round",
-                        borderColor: "yellow"
-                    })
-                );
-            }
         }
 
     } catch (err) {
