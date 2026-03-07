@@ -2,7 +2,7 @@
 
 A simple CLI tool to analyze any GitHub repository and display useful statistics directly in the terminal.
 
-It fetches repository data from the GitHub API and presents it in a clean, formatted output including repository metrics, language distribution, and commit activity graphs.
+It fetches repository data from the GitHub API and presents it in a clean, formatted output including repository metrics, language distribution.
 
 ---
 
@@ -12,7 +12,6 @@ It fetches repository data from the GitHub API and presents it in a clean, forma
 * Stars, forks, watchers, issues
 * Contributor and release count
 * Language usage chart
-* Commit activity graph (weekly commits)
 * Clean terminal UI with tables and charts
 
 ---
