@@ -40,7 +40,7 @@ node analyze.js owner/repo
 Example:
 
 ```
-node analyze.js facebook/react
+node analyze.js Swp-dev/github-repo-analyzer
 ```
 
 ---
